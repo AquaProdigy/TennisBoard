@@ -1,0 +1,12 @@
+package org.roadmap.tennisboard.repository;
+
+import org.roadmap.tennisboard.entity.Player;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+
+public interface PlayerRepository extends JpaRepository<Player, Long> {
+
+    Optional<Player> findByName(String name);
+}
