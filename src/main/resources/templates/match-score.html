@@ -9,16 +9,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
-    <script src="js/app.js"></script>
+    <script src="/static/js/app.js"></script>
 </head>
 <body>
 <header class="header">
     <section class="nav-header">
         <div class="brand">
             <div class="nav-toggle">
-                <img src="images/menu.png" alt="Logo" class="logo">
+                <img src="/images/menu.png" alt="Logo" class="logo">
             </div>
             <span class="logo-text">TennisScoreboard</span>
         </div>
@@ -45,20 +45,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="player1">
-                    <td class="table-text">Rafael Nadal</td>
-                    <td class="table-text">2</td>
-                    <td class="table-text">4</td>
-                    <td class="table-text">40</td>
+                <tr th:if="${matchScore != null}" class="player1">
+                    <td class="table-text" th:text="${matchScore.getPlayerOne().getPlayer().getName()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerOne().getSets()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerOne().getGames()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerOne().getPoints()}"></td>
                     <td class="table-text">
                         <div class="score-btn">Score</div>
                     </td>
                 </tr>
-                <tr class="player2">
-                    <td class="table-text">Roger Federer</td>
-                    <td class="table-text">2</td>
-                    <td class="table-text">3</td>
-                    <td class="table-text">15</td>
+                <tr th:if="${matchScore != null}" class="player2">
+                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getPlayer().getName()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getSets()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getGames()}"></td>
+                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getPoints()}"></td>
                     <td class="table-text">
                         <div class="score-btn">Score</div>
                     </td>
