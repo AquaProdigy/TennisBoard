@@ -1,9 +1,11 @@
 package org.roadmap.tennisboard.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.dto.match.CreateMatchRequest;
 import org.roadmap.tennisboard.model.MatchScore;
-import org.roadmap.tennisboard.service.MatchService;
+import org.roadmap.tennisboard.service.NewMatchService;
+import org.roadmap.tennisboard.service.OngoingMatchesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +17,10 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/new-match")
+@RequiredArgsConstructor
 public class MatchController {
-    private final MatchService matchService;
-
-    public MatchController(MatchService matchService) {
-        this.matchService = matchService;
-    }
+    private final NewMatchService matchService;
+    private final OngoingMatchesService ongoingMatchService;
 
     @GetMapping
     public String index(Model model) {
@@ -34,7 +34,7 @@ public class MatchController {
             RedirectAttributes redirectAttributes
     ) {
         MatchScore matchScore = matchService.createMatch(request);
-        Optional<UUID> uuid = matchService.getMatchUuidByMatchScore(matchScore);
+        Optional<UUID> uuid = ongoingMatchService.getMatchByMatchScore(matchScore);
 
         if (uuid.isPresent()) {
             redirectAttributes.addAttribute("uuid", uuid.get());

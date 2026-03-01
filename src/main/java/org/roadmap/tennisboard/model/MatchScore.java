@@ -1,16 +1,23 @@
 package org.roadmap.tennisboard.model;
 
 
-import java.util.Objects;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Objects;
+
+@Getter
+@Setter
 public class MatchScore {
     private final PlayerScore playerOne;
     private final PlayerScore playerTwo;
 
+    private boolean tieBreak;
+
     private MatchScore(PlayerScore playerOne, PlayerScore playerTwo) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
+        this.tieBreak = false;
     }
 
     public static MatchScore createNewMatch(PlayerScore playerOne, PlayerScore playerTwo) {
@@ -32,12 +39,5 @@ public class MatchScore {
         return Objects.hash(playerOne, playerTwo);
     }
 
-    public PlayerScore getPlayerOne() {
-        return playerOne;
-    }
-
-    public PlayerScore getPlayerTwo() {
-        return playerTwo;
-    }
 }
 

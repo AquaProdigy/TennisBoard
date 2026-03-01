@@ -1,26 +1,39 @@
 package org.roadmap.tennisboard.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.roadmap.tennisboard.entity.Player;
+import org.roadmap.tennisboard.enums.TennisPoint;
 
 import java.util.Objects;
 
+
+@Getter
+@Setter
 public class PlayerScore {
     private Player player;
     private int games;
     private int sets;
-    private int points;
+    private TennisPoint points;
+    private int tieBreakPoints;
 
-    private PlayerScore(Player player, int games, int sets, int points) {
+    private PlayerScore(Player player) {
         this.player = player;
-        this.games = games;
-        this.sets = sets;
-        this.points = points;
+        this.games = 0;
+        this.sets = 0;
+        this.points = TennisPoint.ZERO;
+        this.tieBreakPoints = 0;
     }
 
-    public static PlayerScore createNewPlayerScore(Player player) {
-        return new PlayerScore(player, 0, 0, 0);
+    public static PlayerScore create(Player player) {
+        return new PlayerScore(player);
     }
 
+    public void resetPoints() {
+        this.points = TennisPoint.ZERO;
+        this.tieBreakPoints = 0;
+
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -34,19 +47,4 @@ public class PlayerScore {
         return Objects.hash(player, games, sets, points);
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public int getGames() {
-        return games;
-    }
-
-    public int getSets() {
-        return sets;
-    }
-
-    public int getPoints() {
-        return points;
-    }
 }
