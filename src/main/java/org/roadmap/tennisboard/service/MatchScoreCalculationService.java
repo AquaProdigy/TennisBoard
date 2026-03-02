@@ -7,50 +7,40 @@ import org.roadmap.tennisboard.exception.MatchNotFound;
 import org.roadmap.tennisboard.model.MatchScore;
 import org.roadmap.tennisboard.model.PlayerScore;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
+import static org.roadmap.tennisboard.enums.TennisPoint.ADVANTAGE;
 import static org.roadmap.tennisboard.enums.TennisPoint.FORTY;
-import static org.roadmap.tennisboard.enums.TennisPoint.ZERO;
+
 
 @Service
 @RequiredArgsConstructor
 public class MatchScoreCalculationService {
-    private static final String PLAYER_ONE = "player1";
+    private static final int PLAYER_ONE = 1;
 
     private final OngoingMatchesService ongoingMatchesService;
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService;
 
-    public void makeMove(String uuid, String player) {
+    public void makeMove(UUID uuid, int player) {
         MatchScore match = ongoingMatchesService
-                .getMatchByMatchId(UUID.fromString(uuid))
+                .getMatch(uuid)
                 .orElseThrow(MatchNotFound::new);
 
-        PlayerScore winner;
-        PlayerScore loser;
+        PlayerScore winner = player == PLAYER_ONE ? match.getPlayerOne() : match.getPlayerTwo();
+        PlayerScore loser = player == PLAYER_ONE ? match.getPlayerTwo() : match.getPlayerOne();
 
-        if (player.equals(PLAYER_ONE)) {
-            winner = match.getPlayerOne();
-            loser = match.getPlayerTwo();
-        } else {
-            winner = match.getPlayerTwo();
-            loser = match.getPlayerOne();
-        }
-
-        scorePoint(match, winner, loser);
+        scorePoint(match, uuid, winner, loser);
     }
 
-    private void scorePoint(MatchScore match, PlayerScore winner, PlayerScore loser) {
+    private void scorePoint(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
 
         if (isTieBreak(match)) {
-            scoreTieBreak(match, winner, loser);
+            scoreTieBreak(match, uuidMatch, winner, loser);
             return;
         }
 
         if (winner.getPoints() == TennisPoint.ADVANTAGE) {
-            winGame(match, winner, loser);
+            winGame(match, uuidMatch, winner, loser);
             return;
         }
 
@@ -59,27 +49,28 @@ public class MatchScoreCalculationService {
             return;
         }
 
-        if (winner.getPoints() == TennisPoint.FORTY &&
-                loser.getPoints() == TennisPoint.FORTY) {
+        if (winner.getPoints() == FORTY && loser.getPoints() == FORTY) {
             winner.setPoints(TennisPoint.ADVANTAGE);
             return;
         }
 
         if (winner.getPoints() == FORTY) {
-            winner.setPoints(TennisPoint.ADVANTAGE);
+            winGame(match, uuidMatch, winner, loser);
+            return;
         }
 
         winner.setPoints(winner.getPoints().next());
     }
 
-    private void scoreTieBreak(MatchScore match, PlayerScore winner, PlayerScore loser) {
+    private void scoreTieBreak(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
         winner.setTieBreakPoints(winner.getTieBreakPoints() + 1);
 
         if (winner.getTieBreakPoints() >= 7 &&
                 winner.getTieBreakPoints() - loser.getTieBreakPoints() >= 2) {
 
-            winGame(match, winner, loser);
+            winGame(match, uuidMatch, winner, loser);
             match.setTieBreak(false);
+            resetTieBreakPoints(match);
         }
     }
 
@@ -88,7 +79,7 @@ public class MatchScoreCalculationService {
     }
 
 
-    private void winGame(MatchScore match, PlayerScore winner, PlayerScore loser) {
+    private void winGame(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
         winner.setGames(winner.getGames() + 1);
 
         resetPoints(match);
@@ -99,17 +90,17 @@ public class MatchScoreCalculationService {
         }
 
         if (hasWonSet(winner, loser)) {
-            winSet(match, winner, loser);
+            winSet(match, uuidMatch, winner, loser);
         }
     }
 
-    private void winSet(MatchScore match, PlayerScore winner, PlayerScore loser) {
+    private void winSet(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
         winner.setSets(winner.getSets() + 1);
 
         resetGames(match);
 
         if (winner.getSets() == 2) {
-            finishedMatchesPersistenceService.finishMatch(match, winner, loser);
+            finishedMatchesPersistenceService.finishMatch(match, uuidMatch, winner, loser);
         }
     }
 
@@ -130,6 +121,11 @@ public class MatchScoreCalculationService {
     private void resetPoints(MatchScore match) {
         match.getPlayerOne().resetPoints();
         match.getPlayerTwo().resetPoints();
+    }
+
+    private void resetTieBreakPoints(MatchScore match) {
+        match.getPlayerOne().setTieBreakPoints(0);
+        match.getPlayerTwo().setTieBreakPoints(0);
     }
 
 

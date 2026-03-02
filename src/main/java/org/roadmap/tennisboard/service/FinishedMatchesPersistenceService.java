@@ -9,6 +9,8 @@ import org.roadmap.tennisboard.model.PlayerScore;
 import org.roadmap.tennisboard.repository.MatchRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class FinishedMatchesPersistenceService {
@@ -17,8 +19,8 @@ public class FinishedMatchesPersistenceService {
 
 
     @Transactional
-    public void finishMatch(MatchScore match, PlayerScore winner, PlayerScore loser) {
-        ongoingMatchesService.removeMatchScore(match);
+    public void finishMatch(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
+        ongoingMatchesService.removeMatch(uuidMatch);
 
         matchRepository.save(new Match(
                 match.getPlayerOne().getPlayer(),

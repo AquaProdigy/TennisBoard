@@ -8,30 +8,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OngoingMatchesService {
-    private final Map<UUID, MatchScore> matches =  new HashMap<>();
+    private final ConcurrentHashMap<UUID, MatchScore> matches =  new ConcurrentHashMap<>();
 
-    public Optional<UUID> getMatchByMatchScore(MatchScore matchScore) {
-        return matches.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(matchScore))
-                .map(Map.Entry::getKey)
-                .findFirst();
-    }
-
-    public Optional<MatchScore> getMatchByMatchId(UUID matchId) {
+    public Optional<MatchScore> getMatch(UUID matchId) {
         return Optional.ofNullable(matches.get(matchId));
     }
-
 
     public void addMatch(UUID matchId, MatchScore matchScore) {
         matches.put(matchId, matchScore);
     }
 
-    public void removeMatchScore(MatchScore matchScore) {
-        matches.entrySet()
-                .removeIf(entry -> entry.getValue().equals(matchScore));
+    public void removeMatch(UUID matchId) {
+        matches.remove(matchId);
     }
 
 }

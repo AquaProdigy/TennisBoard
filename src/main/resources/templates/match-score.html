@@ -53,7 +53,7 @@
                     <td class="table-text">
                         <form th:action="@{/match-score}" th:method="post">
                             <input type="hidden" name="uuid" th:value="${matchUuid}">
-                            <input type="hidden" name="player" value="player1">
+                            <input type="hidden" name="player" value="1">
                             <input type="submit" value="Score">
                         </form>
                     </td>
@@ -66,7 +66,7 @@
                     <td class="table-text">
                         <form th:action="@{/match-score}" th:method="post">
                             <input type="hidden" name="uuid" th:value="${matchUuid}">
-                            <input type="hidden" name="player" value="player2">
+                            <input type="hidden" name="player" value="2">
                             <input type="submit" value="Score">
                         </form>
                     </td>

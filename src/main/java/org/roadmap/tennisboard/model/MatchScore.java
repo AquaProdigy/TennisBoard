@@ -14,7 +14,7 @@ public class MatchScore {
 
     private boolean tieBreak;
 
-    private MatchScore(PlayerScore playerOne, PlayerScore playerTwo) {
+    public MatchScore(PlayerScore playerOne, PlayerScore playerTwo) {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.tieBreak = false;

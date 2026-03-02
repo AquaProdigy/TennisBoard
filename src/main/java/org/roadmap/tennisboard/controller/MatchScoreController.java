@@ -1,5 +1,6 @@
 package org.roadmap.tennisboard.controller;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.model.MatchScore;
 import org.roadmap.tennisboard.service.MatchScoreCalculationService;
@@ -22,13 +23,13 @@ public class MatchScoreController {
 
     @GetMapping
     public String matchScore(
-            @RequestParam("uuid") String uuid,
+            @RequestParam("uuid") UUID uuid,
             Model model
     ) {
-        Optional<MatchScore> matchScore = ongoingMatchesService.getMatchByMatchId(UUID.fromString(uuid));
+        Optional<MatchScore> matchScore = ongoingMatchesService.getMatch(uuid);
 
         matchScore.ifPresent(score -> model.addAttribute("matchScore", score));
-        model.addAttribute("matchUuid", UUID.fromString(uuid));
+        model.addAttribute("matchUuid", uuid.toString());
 
         return "match-score";
     }
@@ -36,11 +37,11 @@ public class MatchScoreController {
 
     @PostMapping
     public String tennisStroke(
-            @RequestParam("uuid") String uuid,
-            @RequestParam("player") String player,
+            @RequestParam("uuid") UUID uuid,
+            @NotNull @RequestParam("player") int player,
             RedirectAttributes redirectAttributes
     ) {
-        redirectAttributes.addAttribute("uuid", UUID.fromString(uuid));
+        redirectAttributes.addAttribute("uuid", uuid);
         matchScoreCalculationService.makeMove(uuid, player);
         return "redirect:/match-score";
     }

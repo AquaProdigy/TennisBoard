@@ -1,5 +1,6 @@
 package org.roadmap.tennisboard.service;
 
+import jakarta.transaction.Transactional;
 import org.roadmap.tennisboard.dto.match.CreateMatchRequest;
 import org.roadmap.tennisboard.entity.Player;
 import org.roadmap.tennisboard.model.MatchScore;
@@ -20,7 +21,8 @@ public class NewMatchService {
     }
 
 
-    public MatchScore createMatch(CreateMatchRequest request) {
+    @Transactional
+    public UUID createMatch(CreateMatchRequest request) {
         Player playerOne = playerRepository.findByName(request.getPlayer1())
                 .orElseGet(() -> playerRepository.save(new Player(request.getPlayer1())));
 
@@ -36,7 +38,7 @@ public class NewMatchService {
 
         ongoingMatchesService.addMatch(randomUuidMatch, matchScore);
 
-        return matchScore;
+        return randomUuidMatch;
 
     }
 }

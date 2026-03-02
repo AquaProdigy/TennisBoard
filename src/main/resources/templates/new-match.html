@@ -34,7 +34,10 @@
             <div class="new-match-image"></div>
             <div class="form-container center">
                 <form th:method="POST" th:action="@{/new-match}" th:object="${request}">
-                    <p style="color: red;">Sample error message</p>
+                    <div th:if="${#fields.hasErrors()}">
+                        <p th:each="error : ${#fields.allErrors()}" style="color: red;"
+                           th:text="${error}"></p>
+                    </div>
 
                     <label class="label-player" for="player1">Player one</label>
                     <input id="player1" name="player1" th:field="*{player1}" class="input-player" placeholder="Name" type="text" required title="Enter a name">

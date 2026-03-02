@@ -8,6 +8,7 @@ import org.roadmap.tennisboard.service.NewMatchService;
 import org.roadmap.tennisboard.service.OngoingMatchesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,18 +32,17 @@ public class MatchController {
     @PostMapping
     public String createNewMatch(
             @Valid @ModelAttribute("request") CreateMatchRequest request,
+            BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        MatchScore matchScore = matchService.createMatch(request);
-        Optional<UUID> uuid = ongoingMatchService.getMatchByMatchScore(matchScore);
-
-        if (uuid.isPresent()) {
-            redirectAttributes.addAttribute("uuid", uuid.get());
-            return "redirect:/match-score";
+        if (bindingResult.hasErrors()) {
+            return "new-match";
         }
 
-        return "redirect:/match-score";
+        UUID uuid = matchService.createMatch(request);
 
+        redirectAttributes.addAttribute("uuid", uuid);
+        return "redirect:/match-score";
     }
 
 }
