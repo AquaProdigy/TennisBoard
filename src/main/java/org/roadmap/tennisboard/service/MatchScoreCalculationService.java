@@ -2,14 +2,14 @@ package org.roadmap.tennisboard.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.roadmap.tennisboard.enums.MoveResult;
 import org.roadmap.tennisboard.enums.TennisPoint;
-import org.roadmap.tennisboard.exception.MatchNotFound;
+import org.roadmap.tennisboard.exception.MatchNotFoundException;
 import org.roadmap.tennisboard.model.MatchScore;
 import org.roadmap.tennisboard.model.PlayerScore;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
-import static org.roadmap.tennisboard.enums.TennisPoint.ADVANTAGE;
 import static org.roadmap.tennisboard.enums.TennisPoint.FORTY;
 
 
@@ -21,15 +21,19 @@ public class MatchScoreCalculationService {
     private final OngoingMatchesService ongoingMatchesService;
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService;
 
-    public void makeMove(UUID uuid, int player) {
+    public MoveResult makeMove(UUID uuid, int player) {
         MatchScore match = ongoingMatchesService
                 .getMatch(uuid)
-                .orElseThrow(MatchNotFound::new);
+                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
 
         PlayerScore winner = player == PLAYER_ONE ? match.getPlayerOne() : match.getPlayerTwo();
         PlayerScore loser = player == PLAYER_ONE ? match.getPlayerTwo() : match.getPlayerOne();
 
         scorePoint(match, uuid, winner, loser);
+
+        return ongoingMatchesService.getMatch(uuid).isPresent()
+                ? MoveResult.ONGOING
+                : MoveResult.FINISHED;
     }
 
     private void scorePoint(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {

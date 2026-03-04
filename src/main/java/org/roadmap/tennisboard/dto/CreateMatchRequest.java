@@ -1,4 +1,4 @@
-package org.roadmap.tennisboard.dto.match;
+package org.roadmap.tennisboard.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

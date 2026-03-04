@@ -1,7 +1,7 @@
 package org.roadmap.tennisboard.service;
 
 import jakarta.transaction.Transactional;
-import org.roadmap.tennisboard.dto.match.CreateMatchRequest;
+import org.roadmap.tennisboard.dto.CreateMatchRequest;
 import org.roadmap.tennisboard.entity.Player;
 import org.roadmap.tennisboard.model.MatchScore;
 import org.roadmap.tennisboard.model.PlayerScore;

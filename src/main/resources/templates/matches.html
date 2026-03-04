@@ -6,9 +6,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
-    <script src="../static/js/app.js"></script>
+    <script src="/js/app.js"></script>
 </head>
 
 <body>
@@ -16,14 +16,14 @@
     <section class="nav-header">
         <div class="brand">
             <div class="nav-toggle">
-                <img src="../static/images/menu.png" alt="Logo" class="logo">
+                <img src="/images/menu.png" alt="Logo" class="logo">
             </div>
             <span class="logo-text">TennisScoreboard</span>
         </div>
         <div>
             <nav class="nav-links">
-                <a class="nav-link" href="#">Home</a>
-                <a class="nav-link" href="#">Matches</a>
+                <a class="nav-link" th:href="@{/index}">Home</a>
+                <a class="nav-link" th:href="@{/matches}">Matches</a>
             </nav>
         </div>
     </section>
@@ -32,9 +32,22 @@
     <div class="container">
         <h1>Matches</h1>
         <div class="input-container">
-            <input class="input-filter" placeholder="Filter by name" type="text" />
+            <form th:action="@{/matches}" th:method="get" class="center">
+                <input class="input-filter"
+                       placeholder="Filter by name"
+                       type="text"
+                       name="filterName"
+                       th:value="${filterName}"
+                       id="filterInput"/>
+                <input type="hidden" name="size" th:value="${matches.size}"/>
+                <input type="hidden" name="page" value="0"/>
+
+                <button type="submit" class="btn-filter">Search</button>
+            </form>
+
             <div>
-                <a href="#">
+                <a      th:if="${filterName != null || !filterName.isEmpty()}"
+                        th:href="@{/matches(page=${matches.number}, size=${matches.size})}">
                     <button class="btn-filter">Reset Filter</button>
                 </a>
             </div>
@@ -46,39 +59,27 @@
                 <th>Player Two</th>
                 <th>Winner</th>
             </tr>
-            <tr>
-                <td>Rafael Nadal</td>
-                <td>Roger Federer</td>
-                <td><span class="winner-name-td">Rafael Nadal</span></td>
-            </tr>
-            <tr>
-                <td>Rafael Nadal</td>
-                <td>Roger Federer</td>
-                <td><span class="winner-name-td">Roger Federer</span></td>
-            </tr>
-            <tr>
-                <td>Rafael Nadal</td>
-                <td>Roger Federer</td>
-                <td><span class="winner-name-td">Rafael Nadal</span></td>
-            </tr>
-            <tr>
-                <td>Rafael Nadal</td>
-                <td>Roger Federer</td>
-                <td><span class="winner-name-td">Roger Federer</span></td>
-            </tr>
-            <tr>
-                <td>Rafael Nadal</td>
-                <td>Roger Federer</td>
-                <td><span class="winner-name-td">Rafael Nadal</span></td>
+            <tr th:each="match : ${matches}">
+                <td th:text="${match.getNamePlayer1()}"></td>
+                <td th:text="${match.getNamePlayer2()}"></td>
+                <td><span class="winner-name-td" th:text="${match.getNameWinner()}"></span></td>
             </tr>
         </table>
 
         <div class="pagination">
-            <a class="prev" href="#"> < </a>
-            <a class="num-page current" href="#">1</a>
-            <a class="num-page" href="#">2</a>
-            <a class="num-page" href="#">3</a>
-            <a class="next" href="#"> > </a>
+            <a class="prev"
+               th:classappend="${matches.hasPrevious() ? '' : 'disabled'}"
+               th:href="@{/matches(page=${matches.number - 1}, filterName=${filterName}, size=${matches.getSize()})}"
+            > < </a>
+
+            <a class="num-page current disabled"
+               th:text="${matches.number + 1}"></a>
+
+
+            <a class="next"
+               th:classappend="${matches.hasNext() ? '' : 'disabled'}"
+               th:href="@{/matches(page=${matches.number + 1}, filterName=${filterName}, size=${matches.getSize()})}"
+            > > </a>
         </div>
     </div>
 </main>

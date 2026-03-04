@@ -507,3 +507,8 @@ footer {
 .num-page.current {
     font-weight: bold;
 }
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}

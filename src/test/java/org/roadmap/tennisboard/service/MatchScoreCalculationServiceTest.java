@@ -82,7 +82,6 @@ class MatchScoreCalculationServiceTest {
 
     }
 
-
     @Test
     void shouldStartTieBreak() {
         UUID uuidMatch = UUID.randomUUID();

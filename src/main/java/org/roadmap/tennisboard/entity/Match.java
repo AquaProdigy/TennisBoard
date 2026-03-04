@@ -2,11 +2,14 @@ package org.roadmap.tennisboard.entity;
 
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "Matches")
+@Table(name = "matches")
+@Getter
+@Setter
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,39 +41,11 @@ public class Match {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Match match = (Match) o;
-        return Objects.equals(getId(), match.getId()) && Objects.equals(getPlayer1(), match.getPlayer1()) && Objects.equals(getPlayer2(), match.getPlayer2()) && Objects.equals(getWinner(), match.getWinner());
+        return Objects.equals(id, match.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getPlayer1(), getPlayer2(), getWinner());
-    }
-
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    public Player getWinner() {
-        return winner;
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
-    }
-
-    public Long getId() {
-        return id;
+        return Objects.hashCode(id);
     }
 }
