@@ -24,7 +24,7 @@ public class Match {
     private Player player2;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "winner_id", nullable = true)
+    @JoinColumn(name = "winner_id", nullable = false)
     private Player winner;
 
     public Match(Player player1, Player player2, Player winner) {

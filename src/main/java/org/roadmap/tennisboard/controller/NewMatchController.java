@@ -17,10 +17,10 @@ import java.util.UUID;
 @RequestMapping("/new-match")
 @RequiredArgsConstructor
 public class NewMatchController {
-    private final NewMatchService matchService;
+    private final NewMatchService newMatchService;
 
     @GetMapping
-    public String index(Model model) {
+    public String newMatchPage(Model model) {
         model.addAttribute("request", new CreateMatchRequest());
         return "new-match";
     }
@@ -35,7 +35,7 @@ public class NewMatchController {
             return "new-match";
         }
 
-        UUID uuid = matchService.createMatch(request);
+        UUID uuid = newMatchService.createMatch(request);
         redirectAttributes.addAttribute("uuid", uuid);
 
         return "redirect:/match-score";

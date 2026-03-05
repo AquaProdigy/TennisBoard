@@ -5,3 +5,5 @@ INSERT INTO players (name) VALUES ('ser');
 
 
 INSERT INTO matches (player1_id, player2_id, winner_id) VALUES (1, 2, 1);
+INSERT INTO matches (player1_id, player2_id, winner_id) VALUES (2, 1, 2);
+INSERT INTO matches (player1_id, player2_id, winner_id) VALUES (3, 4, 3);

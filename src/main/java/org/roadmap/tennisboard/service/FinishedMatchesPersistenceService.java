@@ -17,9 +17,12 @@ public class FinishedMatchesPersistenceService {
     private final OngoingMatchesService ongoingMatchesService;
     private final MatchRepository matchRepository;
 
-
     @Transactional
-    public void finishMatch(MatchScore match, UUID uuidMatch, PlayerScore winner, PlayerScore loser) {
+    public void finishMatch(MatchScore match, UUID uuidMatch) {
+        PlayerScore winner = match.getPlayerOne().getSets() == 2
+                ? match.getPlayerOne()
+                : match.getPlayerTwo();
+
         ongoingMatchesService.removeMatch(uuidMatch);
 
         matchRepository.save(new Match(

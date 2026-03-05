@@ -11,12 +11,12 @@ public class CreateMatchRequest {
 
     @NotBlank(message = "Player one not be blank")
     @Size(min = 3, message = "Player one is short")
-    @Size(max = 30, message = "Player one too short")
+    @Size(max = 30, message = "Player one is too long")
     private String player1;
 
     @NotBlank(message = "Player two not be blank")
     @Size(min = 3, message = "Player two is short")
-    @Size(max = 30, message = "Player two too short")
+    @Size(max = 30, message = "Player two is too long")
     private String player2;
 
 }

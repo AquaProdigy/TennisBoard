@@ -25,8 +25,10 @@ public class MatchesController {
             Model model
     ) {
         Page<MatchDto> matches = matchesService.getMatches(filterName, pageable);
+
         model.addAttribute("matches", matches);
         model.addAttribute("filterName", filterName);
+
         return "matches";
     }
 }
