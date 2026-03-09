@@ -24,8 +24,10 @@ public class MatchScoreCalculationService {
                 .getMatch(uuid)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
 
-        PlayerScore winner = player == PLAYER_ONE ? match.getPlayerOne() : match.getPlayerTwo();
-        PlayerScore loser = player == PLAYER_ONE ? match.getPlayerTwo() : match.getPlayerOne();
+        boolean isFirstPlayer = player == PLAYER_ONE;
+
+        PlayerScore winner = isFirstPlayer ? match.getPlayerOne() : match.getPlayerTwo();
+        PlayerScore loser = isFirstPlayer ? match.getPlayerTwo() : match.getPlayerOne();
 
         scorePoint(match, winner, loser);
     }

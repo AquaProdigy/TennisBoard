@@ -1,8 +1,10 @@
 package org.roadmap.tennisboard.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum TennisPoint {
     ZERO("0"),
     FIFTEEN("15"),
@@ -11,10 +13,6 @@ public enum TennisPoint {
     ADVANTAGE("AD");
 
     private final String value;
-
-    TennisPoint(String value) {
-        this.value = value;
-    }
 
     public TennisPoint next() {
         return switch (this) {

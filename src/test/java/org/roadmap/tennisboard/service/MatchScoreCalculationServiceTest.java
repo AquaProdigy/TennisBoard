@@ -33,8 +33,8 @@ class MatchScoreCalculationServiceTest {
     @BeforeEach
     void setUp() {
         matchScore = new MatchScore(
-                PlayerScore.create(new Player("boris")),
-                PlayerScore.create(new Player("vadim"))
+                new PlayerScore(new Player("boris")),
+                new PlayerScore(new Player("vadim"))
         );
     }
 

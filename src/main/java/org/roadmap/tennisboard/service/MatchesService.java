@@ -21,7 +21,7 @@ public class MatchesService {
                     .map(matchMapper::toDto);
         }
 
-        return matchRepository.findAllByPlayerNameContainingIgnoreCase(filterName, pageable)
+        return matchRepository.findAllByPlayerName(filterName, pageable)
                 .map(matchMapper::toDto);
     }
 }

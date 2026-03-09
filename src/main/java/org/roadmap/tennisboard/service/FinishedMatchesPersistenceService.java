@@ -23,13 +23,13 @@ public class FinishedMatchesPersistenceService {
                 ? match.getPlayerOne()
                 : match.getPlayerTwo();
 
-        ongoingMatchesService.removeMatch(uuidMatch);
-
         matchRepository.save(new Match(
                 match.getPlayerOne().getPlayer(),
                 match.getPlayerTwo().getPlayer(),
                 winner.getPlayer()
         ));
+
+        ongoingMatchesService.removeMatch(uuidMatch);
     }
 
 }

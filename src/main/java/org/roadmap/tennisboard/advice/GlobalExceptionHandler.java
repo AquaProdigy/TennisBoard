@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MatchNotFoundException.class)
-    public String matchNotFound(Exception ex, Model model) {
-        model.addAttribute("errorMessage", "Match not found");
-        return "error";
-    }
-
     @ExceptionHandler(Exception.class)
     public String exception(Exception ex, Model model) {
         String msg = ex.getMessage() != null ? ex.getMessage() : "Unknown error";

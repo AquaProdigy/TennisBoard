@@ -29,16 +29,16 @@ public class NewMatchService {
         Player playerTwo = playerRepository.findByName(request.getPlayer2())
                 .orElseGet(() -> playerRepository.save(new Player(request.getPlayer2())));
 
-        MatchScore matchScore = MatchScore.createNewMatch(
-                PlayerScore.create(playerOne),
-                PlayerScore.create(playerTwo)
+        MatchScore matchScore = new MatchScore(
+                new PlayerScore(playerOne),
+                new PlayerScore(playerTwo)
         );
 
-        UUID randomUuidMatch = UUID.randomUUID();
+        UUID matchId = UUID.randomUUID();
 
-        ongoingMatchesService.addMatch(randomUuidMatch, matchScore);
+        ongoingMatchesService.addMatch(matchId, matchScore);
 
-        return randomUuidMatch;
+        return matchId;
 
     }
 }

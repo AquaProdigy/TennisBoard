@@ -8,8 +8,9 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "matches")
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,21 +32,5 @@ public class Match {
         this.player1 = player1;
         this.player2 = player2;
         this.winner = winner;
-    }
-
-    public Match() {
-
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Match match = (Match) o;
-        return Objects.equals(id, match.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }
