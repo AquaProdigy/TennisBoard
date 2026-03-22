@@ -1,27 +1,59 @@
 package org.roadmap.tennisboard.model;
 
-import lombok.Data;
-import org.roadmap.tennisboard.entity.Player;
-import org.roadmap.tennisboard.enums.TennisPoint;
+import lombok.Getter;
 
-@Data
+@Getter
 public class PlayerScore {
-    private Player player;
+    private static final int INITIAL_TIEBREAK_POINTS = 0;
+    private static final int INITIAL_GAMES = 0;
+    private static final int INITIAL_SETS = 0;
+
+
+    private final String playerName;
     private int games;
     private int sets;
     private TennisPoint points;
     private int tieBreakPoints;
 
-    public PlayerScore(Player player) {
-        this.player = player;
-        this.games = 0;
-        this.sets = 0;
+    public PlayerScore(String playerName) {
+        this.playerName = playerName;
+        this.games = INITIAL_GAMES;
+        this.sets = INITIAL_SETS;
         this.points = TennisPoint.ZERO;
-        this.tieBreakPoints = 0;
+        this.tieBreakPoints = INITIAL_TIEBREAK_POINTS;
     }
 
-    public void resetPoints() {
-        this.points = TennisPoint.ZERO;
-        this.tieBreakPoints = 0;
+    protected void incrementGames() {
+        this.games++;
     }
+
+    protected void incrementSets() {
+        this.sets++;
+    }
+
+    protected void incrementTieBreakPoints() {
+        this.tieBreakPoints++;
+    }
+
+    protected void resetGames() {
+        this.games = INITIAL_GAMES;
+    }
+
+    protected void setPoints(TennisPoint point) {
+        this.points = point;
+    }
+
+
+    protected void resetPoints() {
+        this.points = TennisPoint.ZERO;
+    }
+
+    protected void resetTieBreakPoints() {
+        this.tieBreakPoints = INITIAL_TIEBREAK_POINTS;
+    }
+
+
+
+
+
 }

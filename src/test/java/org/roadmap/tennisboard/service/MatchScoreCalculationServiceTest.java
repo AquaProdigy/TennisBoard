@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.roadmap.tennisboard.entity.Player;
-import org.roadmap.tennisboard.enums.TennisPoint;
-import org.roadmap.tennisboard.model.MatchScore;
+import org.roadmap.tennisboard.model.OngoingMatch;
+import org.roadmap.tennisboard.model.TennisPoint;
 import org.roadmap.tennisboard.model.PlayerScore;
 
 import java.util.Optional;
@@ -28,11 +28,11 @@ class MatchScoreCalculationServiceTest {
     @InjectMocks
     private MatchScoreCalculationService matchScoreCalculationService;
 
-    private MatchScore matchScore;
+    private OngoingMatch ongoingMatch;
 
     @BeforeEach
     void setUp() {
-        matchScore = new MatchScore(
+        ongoingMatch = new OngoingMatch(
                 new PlayerScore(new Player("boris")),
                 new PlayerScore(new Player("vadim"))
         );
@@ -42,43 +42,43 @@ class MatchScoreCalculationServiceTest {
     void shouldIncreasePointsForPlayerOne() {
         UUID uuidMatch = UUID.randomUUID();
 
-        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(matchScore));
+        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(ongoingMatch));
 
         matchScoreCalculationService.makeMove(uuidMatch, 1);
 
-        assertEquals(TennisPoint.FIFTEEN, matchScore.getPlayerOne().getPoints());
+        assertEquals(TennisPoint.FIFTEEN, ongoingMatch.getPlayerOne().getPoints());
     }
 
     @Test
     void shouldWinGameForPlayerOne() {
         UUID uuidMatch = UUID.randomUUID();
 
-        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(matchScore));
+        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(ongoingMatch));
 
-        matchScore.getPlayerOne().setPoints(TennisPoint.FORTY);
+        ongoingMatch.getPlayerOne().setPoints(TennisPoint.FORTY);
 
         matchScoreCalculationService.makeMove(uuidMatch, 1);
 
-        assertEquals(1, matchScore.getPlayerOne().getGames());
-        assertEquals(TennisPoint.ZERO, matchScore.getPlayerOne().getPoints());
-        assertEquals(TennisPoint.ZERO, matchScore.getPlayerTwo().getPoints());
+        assertEquals(1, ongoingMatch.getPlayerOne().getGames());
+        assertEquals(TennisPoint.ZERO, ongoingMatch.getPlayerOne().getPoints());
+        assertEquals(TennisPoint.ZERO, ongoingMatch.getPlayerTwo().getPoints());
     }
 
     @Test
     void shouldContinueGameForAdvantagePoints() {
         UUID uuidMatch = UUID.randomUUID();
 
-        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(matchScore));
+        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(ongoingMatch));
 
-        matchScore.getPlayerOne().setPoints(TennisPoint.FORTY);
-        matchScore.getPlayerTwo().setPoints(TennisPoint.FORTY);
+        ongoingMatch.getPlayerOne().setPoints(TennisPoint.FORTY);
+        ongoingMatch.getPlayerTwo().setPoints(TennisPoint.FORTY);
 
         matchScoreCalculationService.makeMove(uuidMatch, 1);
 
-        assertEquals(TennisPoint.ADVANTAGE, matchScore.getPlayerOne().getPoints());
-        assertEquals(TennisPoint.FORTY, matchScore.getPlayerTwo().getPoints());
-        assertEquals(0, matchScore.getPlayerOne().getGames());
-        assertEquals(0, matchScore.getPlayerTwo().getGames());
+        assertEquals(TennisPoint.ADVANTAGE, ongoingMatch.getPlayerOne().getPoints());
+        assertEquals(TennisPoint.FORTY, ongoingMatch.getPlayerTwo().getPoints());
+        assertEquals(0, ongoingMatch.getPlayerOne().getGames());
+        assertEquals(0, ongoingMatch.getPlayerTwo().getGames());
 
     }
 
@@ -86,17 +86,17 @@ class MatchScoreCalculationServiceTest {
     void shouldStartTieBreak() {
         UUID uuidMatch = UUID.randomUUID();
 
-        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(matchScore));
+        when(ongoingMatchesService.getMatch(uuidMatch)).thenReturn(Optional.of(ongoingMatch));
 
-        matchScore.getPlayerOne().setGames(5);
-        matchScore.getPlayerTwo().setGames(6);
-        matchScore.getPlayerOne().setPoints(TennisPoint.FORTY);
+        ongoingMatch.getPlayerOne().setGames(5);
+        ongoingMatch.getPlayerTwo().setGames(6);
+        ongoingMatch.getPlayerOne().setPoints(TennisPoint.FORTY);
 
         matchScoreCalculationService.makeMove(uuidMatch, 1);
 
-        assertTrue(matchScore.isTieBreak());
-        assertEquals(6, matchScore.getPlayerOne().getGames());
-        assertEquals(6, matchScore.getPlayerTwo().getGames());
+        assertTrue(ongoingMatch.isTieBreak());
+        assertEquals(6, ongoingMatch.getPlayerOne().getGames());
+        assertEquals(6, ongoingMatch.getPlayerTwo().getGames());
     }
 
 }

@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface MatchRepository extends JpaRepository<Match, Long> {
 
-    @Query("SELECT m FROM Match m JOIN FETCH m.player1 JOIN FETCH m.player2 LEFT JOIN FETCH m.winner WHERE LOWER(m.player1.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(m.player2.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    @Query("SELECT m FROM Match m JOIN FETCH m.firstPlayer JOIN FETCH m.secondPlayer LEFT JOIN FETCH m.winner WHERE LOWER(m.firstPlayer.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(m.secondPlayer.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Match> findAllByPlayerName(@Param("name") String name, Pageable pageable);
 
-    @Query("SELECT m FROM Match m JOIN FETCH m.player1 JOIN FETCH m.player2 LEFT JOIN FETCH m.winner")
+    @Query("SELECT m FROM Match m JOIN FETCH m.firstPlayer JOIN FETCH m.secondPlayer LEFT JOIN FETCH m.winner")
     Page<Match> findAllMatches(Pageable pageable);
 }

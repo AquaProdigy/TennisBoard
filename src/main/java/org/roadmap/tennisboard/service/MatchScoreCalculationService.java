@@ -2,125 +2,25 @@ package org.roadmap.tennisboard.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.roadmap.tennisboard.enums.TennisPoint;
+import org.roadmap.tennisboard.model.OngoingMatch;
+import org.roadmap.tennisboard.model.TennisPoint;
 import org.roadmap.tennisboard.exception.MatchNotFoundException;
-import org.roadmap.tennisboard.model.MatchScore;
 import org.roadmap.tennisboard.model.PlayerScore;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
-import static org.roadmap.tennisboard.enums.TennisPoint.FORTY;
+import static org.roadmap.tennisboard.model.TennisPoint.FORTY;
 
 
 @Service
-@RequiredArgsConstructor
 public class MatchScoreCalculationService {
     private static final int PLAYER_ONE = 1;
 
-    private final OngoingMatchesService ongoingMatchesService;
+    public void makeMove(OngoingMatch match, int playerNumber) {
+        PlayerScore winner = playerNumber == PLAYER_ONE
+                ? match.getFirstPlayer()
+                : match.getSecondPlayer();
 
-    public void makeMove(UUID uuid, int player) {
-        MatchScore match = ongoingMatchesService
-                .getMatch(uuid)
-                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
-
-        boolean isFirstPlayer = player == PLAYER_ONE;
-
-        PlayerScore winner = isFirstPlayer ? match.getPlayerOne() : match.getPlayerTwo();
-        PlayerScore loser = isFirstPlayer ? match.getPlayerTwo() : match.getPlayerOne();
-
-        scorePoint(match, winner, loser);
+        match.awardPointTo(winner);
     }
-
-    private void scorePoint(MatchScore match, PlayerScore winner, PlayerScore loser) {
-
-        if (match.isTieBreak()) {
-            scoreTieBreak(match, winner, loser);
-            return;
-        }
-
-        if (winner.getPoints() == TennisPoint.ADVANTAGE) {
-            winGame(match, winner, loser);
-            return;
-        }
-
-        if (loser.getPoints() == TennisPoint.ADVANTAGE) {
-            loser.setPoints(TennisPoint.FORTY);
-            return;
-        }
-
-        if (winner.getPoints() == FORTY && loser.getPoints() == FORTY) {
-            winner.setPoints(TennisPoint.ADVANTAGE);
-            return;
-        }
-
-        if (winner.getPoints() == FORTY) {
-            winGame(match, winner, loser);
-            return;
-        }
-
-        winner.setPoints(winner.getPoints().next());
-    }
-
-    private void scoreTieBreak(MatchScore match, PlayerScore winner, PlayerScore loser) {
-        winner.setTieBreakPoints(winner.getTieBreakPoints() + 1);
-
-        if (winner.getTieBreakPoints() >= 7 &&
-                winner.getTieBreakPoints() - loser.getTieBreakPoints() >= 2) {
-
-            match.setTieBreak(false);
-            resetTieBreakPoints(match);
-            winGame(match, winner, loser);
-        }
-    }
-
-    private void winGame(MatchScore match, PlayerScore winner, PlayerScore loser) {
-        winner.setGames(winner.getGames() + 1);
-
-        resetPoints(match);
-
-        if (isTieBreakStart(match)) {
-            match.setTieBreak(true);
-            return;
-        }
-
-        if (hasWonSet(winner, loser)) {
-            winSet(match, winner);
-        }
-    }
-
-    private void winSet(MatchScore match, PlayerScore winner) {
-        winner.setSets(winner.getSets() + 1);
-        resetGames(match);
-    }
-
-    private void resetGames(MatchScore match) {
-        match.getPlayerOne().setGames(0);
-        match.getPlayerTwo().setGames(0);
-    }
-
-    private boolean isTieBreakStart(MatchScore match) {
-        return match.getPlayerOne().getGames() == 6 &&  match.getPlayerTwo().getGames() == 6;
-    }
-
-    public boolean isMatchFinished(MatchScore match) {
-        return match.getPlayerOne().getSets() == 2 || match.getPlayerTwo().getSets() == 2;
-    }
-
-    private boolean hasWonSet(PlayerScore winner, PlayerScore loser) {
-        return (winner.getGames() >= 6 && winner.getGames() - loser.getGames() >= 2) ||
-                winner.getGames() == 7;
-    }
-
-    private void resetPoints(MatchScore match) {
-        match.getPlayerOne().resetPoints();
-        match.getPlayerTwo().resetPoints();
-    }
-
-    private void resetTieBreakPoints(MatchScore match) {
-        match.getPlayerOne().setTieBreakPoints(0);
-        match.getPlayerTwo().setTieBreakPoints(0);
-    }
-
-
 }

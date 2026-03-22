@@ -46,26 +46,24 @@
                 </thead>
                 <tbody>
                 <tr th:if="${matchScore != null}" class="player1">
-                    <td class="table-text" th:text="${matchScore.getPlayerOne().getPlayer().getName()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerOne().getSets()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerOne().getGames()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerOne().getTieBreakPoints() > 0 ? matchScore.getPlayerOne().getTieBreakPoints() : matchScore.getPlayerOne().getPoints().getValue()}"></td>
+                    <td class="table-text" th:text="${matchScore.firstPlayer.playerName}"></td>
+                    <td class="table-text" th:text="${matchScore.firstPlayer.sets}"></td>
+                    <td class="table-text" th:text="${matchScore.firstPlayer.games}"></td>
+                    <td class="table-text" th:text="${matchScore.tieBreak ? matchScore.firstPlayer.tieBreakPoints : matchScore.firstPlayer.points.value}"></td>
                     <td class="table-text">
-                        <form th:action="@{/match-score}" th:method="post">
-                            <input type="hidden" name="uuid" th:value="${matchUuid}">
+                        <form th:action="@{/match-score(uuid=${param.uuid})}" th:method="post">
                             <input type="hidden" name="player" value="1">
                             <input type="submit" value="Score">
                         </form>
                     </td>
                 </tr>
                 <tr th:if="${matchScore != null}" class="player2">
-                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getPlayer().getName()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getSets()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getGames()}"></td>
-                    <td class="table-text" th:text="${matchScore.getPlayerTwo().getTieBreakPoints() > 0 ? matchScore.getPlayerTwo().getTieBreakPoints() : matchScore.getPlayerTwo().getPoints().getValue()}"></td>
+                    <td class="table-text" th:text="${matchScore.secondPlayer.playerName}"></td>
+                    <td class="table-text" th:text="${matchScore.secondPlayer.sets}"></td>
+                    <td class="table-text" th:text="${matchScore.secondPlayer.games}"></td>
+                    <td class="table-text" th:text="${matchScore.tieBreak ? matchScore.secondPlayer.tieBreakPoints : matchScore.secondPlayer.points.value}"></td>
                     <td class="table-text">
-                        <form th:action="@{/match-score}" th:method="post">
-                            <input type="hidden" name="uuid" th:value="${matchUuid}">
+                        <form th:action="@{/match-score(uuid=${param.uuid})}" th:method="post">
                             <input type="hidden" name="player" value="2">
                             <input type="submit" value="Score">
                         </form>

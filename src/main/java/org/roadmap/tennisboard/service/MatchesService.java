@@ -16,7 +16,7 @@ public class MatchesService {
     private final MatchMapper matchMapper;
 
     public Page<MatchDto> getMatches(String filterName, Pageable pageable) {
-        if (filterName == null || filterName.isEmpty()) {
+        if (filterName == null || filterName.strip().isBlank()) {
             return matchRepository.findAllMatches(pageable)
                     .map(matchMapper::toDto);
         }

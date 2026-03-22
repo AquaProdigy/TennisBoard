@@ -5,17 +5,16 @@ import lombok.*;
 
 import java.util.Objects;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "players")
-@Data
-@NoArgsConstructor
-@EqualsAndHashCode
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, length = 30, nullable = false)
+    @Column(name = "name", unique = true, length = 20, nullable = false)
     private String name;
 
     public Player(String name) {

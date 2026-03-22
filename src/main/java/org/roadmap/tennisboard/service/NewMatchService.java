@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.dto.CreateMatchRequest;
 import org.roadmap.tennisboard.entity.Player;
-import org.roadmap.tennisboard.model.MatchScore;
+import org.roadmap.tennisboard.model.OngoingMatch;
 import org.roadmap.tennisboard.model.PlayerScore;
 import org.roadmap.tennisboard.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
@@ -19,24 +19,20 @@ public class NewMatchService {
 
     @Transactional
     public UUID createMatch(CreateMatchRequest request) {
-        if (request.getPlayer1().equalsIgnoreCase(request.getPlayer2())) {
-            throw new IllegalArgumentException("Players can't be the same");
-        }
+        Player firstPlayer = playerRepository.findByNameIgnoreCase(request.getFirstPlayer())
+                .orElseGet(() -> playerRepository.save(new Player(request.getFirstPlayer())));
 
-        Player playerOne = playerRepository.findByName(request.getPlayer1())
-                .orElseGet(() -> playerRepository.save(new Player(request.getPlayer1())));
+        Player secondPlayer = playerRepository.findByNameIgnoreCase(request.getSecondPlayer())
+                .orElseGet(() -> playerRepository.save(new Player(request.getSecondPlayer())));
 
-        Player playerTwo = playerRepository.findByName(request.getPlayer2())
-                .orElseGet(() -> playerRepository.save(new Player(request.getPlayer2())));
-
-        MatchScore matchScore = new MatchScore(
-                new PlayerScore(playerOne),
-                new PlayerScore(playerTwo)
+        OngoingMatch ongoingMatch = new OngoingMatch(
+                new PlayerScore(firstPlayer.getName()),
+                new PlayerScore(secondPlayer.getName())
         );
 
         UUID matchId = UUID.randomUUID();
 
-        ongoingMatchesService.addMatch(matchId, matchScore);
+        ongoingMatchesService.addMatch(matchId, ongoingMatch);
 
         return matchId;
 

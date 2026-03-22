@@ -1,25 +1,23 @@
 package org.roadmap.tennisboard.service;
 
 
-import org.roadmap.tennisboard.model.MatchScore;
+import org.roadmap.tennisboard.model.OngoingMatch;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OngoingMatchesService {
-    private final ConcurrentHashMap<UUID, MatchScore> matches =  new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, OngoingMatch> matches =  new ConcurrentHashMap<>();
 
-    public Optional<MatchScore> getMatch(UUID matchId) {
+    public Optional<OngoingMatch> getMatch(UUID matchId) {
         return Optional.ofNullable(matches.get(matchId));
     }
 
-    public void addMatch(UUID matchId, MatchScore matchScore) {
-        matches.put(matchId, matchScore);
+    public void addMatch(UUID matchId, OngoingMatch ongoingMatch) {
+        matches.put(matchId, ongoingMatch);
     }
 
     public void removeMatch(UUID matchId) {

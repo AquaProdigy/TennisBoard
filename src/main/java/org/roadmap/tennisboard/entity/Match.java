@@ -8,8 +8,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "matches")
-@Data
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
 public class Match {
     @Id
@@ -17,20 +17,20 @@ public class Match {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player1_id", nullable = false)
-    private Player player1;
+    @JoinColumn(name = "first_player_id", nullable = false)
+    private Player firstPlayer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player2_id", nullable = false)
-    private Player player2;
+    @JoinColumn(name = "second_player_id", nullable = false)
+    private Player secondPlayer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winner_id", nullable = false)
     private Player winner;
 
-    public Match(Player player1, Player player2, Player winner) {
-        this.player1 = player1;
-        this.player2 = player2;
+    public Match(Player firstPlayer, Player secondPlayer, Player winner) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
         this.winner = winner;
     }
 }

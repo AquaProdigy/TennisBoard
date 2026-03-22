@@ -1,9 +1,11 @@
 package org.roadmap.tennisboard.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.exception.MatchNotFoundException;
-import org.roadmap.tennisboard.model.MatchScore;
+import org.roadmap.tennisboard.model.OngoingMatch;
 import org.roadmap.tennisboard.service.FinishedMatchesPersistenceService;
 import org.roadmap.tennisboard.service.MatchScoreCalculationService;
 import org.roadmap.tennisboard.service.OngoingMatchesService;
@@ -14,46 +16,52 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
 
+
 @Controller
 @RequestMapping("/match-score")
 @RequiredArgsConstructor
 public class MatchScoreController {
+    private static final String VIEW_NAME = "match-score";
+    private static final String MATCH_SCORE_ATTR = "matchScore";
+    private static final String UUID_ATTR = "uuid";
+    private static final String REDIRECT_MATCHES = "redirect:/matches";
+    private static final String REDIRECT_MATCH_SCORE = "redirect:/match-score";
+
     private final OngoingMatchesService ongoingMatchesService;
     private final MatchScoreCalculationService matchScoreCalculationService;
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService;
 
     @GetMapping
     public String matchScore(
-            @RequestParam("uuid") UUID uuid,
+            @RequestParam(UUID_ATTR) UUID uuid,
             Model model
     ) {
-        MatchScore matchScore = ongoingMatchesService.getMatch(uuid)
-                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
-
-        model.addAttribute("matchScore", matchScore);
-        model.addAttribute("matchUuid", uuid.toString());
-
-        return "match-score";
+        OngoingMatch match = getMatchOrThrow(uuid);
+        model.addAttribute(MATCH_SCORE_ATTR, match);
+        return VIEW_NAME;
     }
-
 
     @PostMapping
     public String tennisStroke(
-            @RequestParam("uuid") UUID uuid,
-            @NotNull @RequestParam("player") int player,
+            @RequestParam(UUID_ATTR) UUID uuid,
+            @Min(1) @Max(2) @RequestParam("player") int player,
             RedirectAttributes redirectAttributes
     ) {
-        matchScoreCalculationService.makeMove(uuid, player);
+        OngoingMatch match = getMatchOrThrow(uuid);
 
-        MatchScore match = ongoingMatchesService.getMatch(uuid)
-                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
+        matchScoreCalculationService.makeMove(match, player);
 
-        if (matchScoreCalculationService.isMatchFinished(match)) {
+        if (match.isFinished()) {
             finishedMatchesPersistenceService.finishMatch(match, uuid);
-            return "redirect:/matches";
+            return REDIRECT_MATCHES;
         }
 
-        redirectAttributes.addAttribute("uuid", uuid);
-        return "redirect:/match-score";
+        redirectAttributes.addAttribute(UUID_ATTR, uuid);
+        return REDIRECT_MATCH_SCORE;
+    }
+
+    private OngoingMatch getMatchOrThrow(UUID uuid) {
+        return ongoingMatchesService.getMatch(uuid)
+                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
     }
 }

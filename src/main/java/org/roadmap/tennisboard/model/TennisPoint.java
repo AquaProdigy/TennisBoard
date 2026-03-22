@@ -1,4 +1,4 @@
-package org.roadmap.tennisboard.enums;
+package org.roadmap.tennisboard.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,8 @@ public enum TennisPoint {
             case ZERO -> FIFTEEN;
             case FIFTEEN -> THIRTY;
             case THIRTY -> FORTY;
-            default -> this;
+            case FORTY -> ADVANTAGE;
+            default -> throw new IllegalStateException("Cannot call next() on ADVANTAGE");
         };
     }
 }

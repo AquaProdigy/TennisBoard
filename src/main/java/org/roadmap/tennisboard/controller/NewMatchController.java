@@ -2,6 +2,7 @@ package org.roadmap.tennisboard.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.roadmap.tennisboard.api.ApiValidateMessages;
 import org.roadmap.tennisboard.dto.CreateMatchRequest;
 import org.roadmap.tennisboard.service.NewMatchService;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,11 @@ public class NewMatchController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
+
+        if (request.getFirstPlayer().equalsIgnoreCase(request.getSecondPlayer())) {
+            bindingResult.reject("players.same", ApiValidateMessages.NAME_IS_SAME);
+        }
+
         if (bindingResult.hasErrors()) {
             return "new-match";
         }
