@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.dto.CreateMatchRequest;
 import org.roadmap.tennisboard.entity.Player;
-import org.roadmap.tennisboard.model.OngoingMatch;
-import org.roadmap.tennisboard.model.PlayerScore;
+import org.roadmap.tennisboard.model.tennis.TennisMatch;
+import org.roadmap.tennisboard.model.tennis.TennisPlayer;
 import org.roadmap.tennisboard.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +25,9 @@ public class NewMatchService {
         Player secondPlayer = playerRepository.findByNameIgnoreCase(request.getSecondPlayer())
                 .orElseGet(() -> playerRepository.save(new Player(request.getSecondPlayer())));
 
-        OngoingMatch ongoingMatch = new OngoingMatch(
-                new PlayerScore(firstPlayer.getName()),
-                new PlayerScore(secondPlayer.getName())
+        TennisMatch ongoingMatch = new TennisMatch(
+                new TennisPlayer(firstPlayer.getName()),
+                new TennisPlayer(secondPlayer.getName())
         );
 
         UUID matchId = UUID.randomUUID();

@@ -2,10 +2,9 @@ package org.roadmap.tennisboard.controller;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.exception.MatchNotFoundException;
-import org.roadmap.tennisboard.model.OngoingMatch;
+import org.roadmap.tennisboard.model.tennis.TennisMatch;
 import org.roadmap.tennisboard.service.FinishedMatchesPersistenceService;
 import org.roadmap.tennisboard.service.MatchScoreCalculationService;
 import org.roadmap.tennisboard.service.OngoingMatchesService;
@@ -36,7 +35,7 @@ public class MatchScoreController {
             @RequestParam(UUID_ATTR) UUID uuid,
             Model model
     ) {
-        OngoingMatch match = getMatchOrThrow(uuid);
+        TennisMatch match = getMatchOrThrow(uuid);
         model.addAttribute(MATCH_SCORE_ATTR, match);
         return VIEW_NAME;
     }
@@ -47,7 +46,7 @@ public class MatchScoreController {
             @Min(1) @Max(2) @RequestParam("player") int player,
             RedirectAttributes redirectAttributes
     ) {
-        OngoingMatch match = getMatchOrThrow(uuid);
+        TennisMatch match = getMatchOrThrow(uuid);
 
         matchScoreCalculationService.makeMove(match, player);
 
@@ -60,7 +59,7 @@ public class MatchScoreController {
         return REDIRECT_MATCH_SCORE;
     }
 
-    private OngoingMatch getMatchOrThrow(UUID uuid) {
+    private TennisMatch getMatchOrThrow(UUID uuid) {
         return ongoingMatchesService.getMatch(uuid)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
     }

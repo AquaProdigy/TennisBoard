@@ -3,8 +3,7 @@ package org.roadmap.tennisboard.mapper;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.entity.Match;
 import org.roadmap.tennisboard.entity.Player;
-import org.roadmap.tennisboard.model.OngoingMatch;
-import org.roadmap.tennisboard.model.PlayerScore;
+import org.roadmap.tennisboard.model.tennis.TennisMatch;
 import org.roadmap.tennisboard.repository.PlayerRepository;
 import org.springframework.stereotype.Component;
 
@@ -13,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class OngoingMatchMapper {
     private final PlayerRepository playerRepository;
 
-    public Match toEntity(OngoingMatch match) {
-        Player firstPlayer = findPlayer(match.getFirstPlayer().getPlayerName());
-        Player secondPlayer = findPlayer(match.getSecondPlayer().getPlayerName());
-        Player winner = findPlayer(match.getWinner().getPlayerName());
+    public Match toEntity(TennisMatch match) {
+        Player firstPlayer = findPlayer(match.getFirstPlayer().name());
+        Player secondPlayer = findPlayer(match.getSecondPlayer().name());
+        Player winner = findPlayer(match.getWinner().name());
 
         return new Match(firstPlayer, secondPlayer, winner);
     }

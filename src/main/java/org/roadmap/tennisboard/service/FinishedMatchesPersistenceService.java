@@ -1,10 +1,10 @@
 package org.roadmap.tennisboard.service;
 
 
+import org.roadmap.tennisboard.model.tennis.TennisMatch;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.roadmap.tennisboard.mapper.OngoingMatchMapper;
-import org.roadmap.tennisboard.model.OngoingMatch;
 import org.roadmap.tennisboard.repository.MatchRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class FinishedMatchesPersistenceService {
     private final OngoingMatchMapper mapper;
 
     @Transactional
-    public void finishMatch(OngoingMatch match, UUID matchId) {
+    public void finishMatch(TennisMatch match, UUID matchId) {
         matchRepository.save(mapper.toEntity(match));
         ongoingMatchesService.removeMatch(matchId);
     }
